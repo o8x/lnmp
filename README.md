@@ -2,14 +2,14 @@
 在RHEL系计算机上部署lamp
 
 ### 需要处理的依赖包 ###
-~~~
+~~~shell
     dnf yum 均可执行下列操作
     dnf -y remove apr-util-devel apr apr-util-mysql apr-docs apr-devel apr-util apr-util-docs 
-    dnf -y install openssl openssl-devel db4-devel libjpeg-devel libpng-devel libXpm-devel gmp-devel libc-client-devel openldap-devel unixODBC-devel postgresql-devel sqlite-devel aspell-devel net-snmp-devel libxslt-devel libxml2-devel pcre-devel mysql-devel unixODBC-devel postgresql-devel pspell-devel net-snmp-devel libxslt-devel freetype-devel libxml-devel libc-client-devel pam-devel libc-client libc-client-devel
+    dnf -y install openssl openssl-devel db4-devel libjpeg-devel libpng-devel libXpm-devel gmp-devel libc-client-devel openldap-devel unixODBC-devel postgresql-devel sqlite-devel aspell-devel net-snmp-devel libxslt-devel libxml2-devel pcre-devel mysql-devel unixODBC-devel postgresql-devel pspell-devel net-snmp-devel libxslt-devel freetype-devel libxml-devel libc-client-devel pam-devel libc-client libc-client-devel bzip2 bzip2-devel 
 ~~~
 
 ### 需要的进行的链接动作
-~~~
+~~~shell
     ln -s /usr/lib64/libssl.so /usr/lib/
     ln -s /usr/lib64/libc-client.so /usr/lib/libc-client.so 
 ~~~
@@ -18,7 +18,7 @@
 # 需要提前编译或安装的包
 
 **mcrypt**
-~~~
+~~~shell
     tar zxf libmcrypt-2.5.7.tar.gz
     cd libmcrypt-2.5.7
     ./configure
@@ -30,7 +30,7 @@
 ~~~
 
 **apr**
-~~~
+~~~shell
     tar -zxf apr-1.4.5.tar.gz  
     cd  apr-1.4.5  
     ./configure --prefix=/opt/Tools/Lamp/apr  
@@ -40,7 +40,7 @@
 ~~~
 
 **apr-util**
-~~~
+~~~shell
     tar -zxf apr-util-1.3.12.tar.gz  
     cd apr-util-1.3.12  
     ./configure --prefix=/opt/Tools/Lamp/apr-util -with- apr=/opt/Tools/Lamp/apr/bin/apr-1-config  
@@ -52,7 +52,7 @@
 ~~~
 
 **pcre**
-~~~
+~~~shell
     unzip -o pcre-8.10.zip  
     cd pcre-8.10  
     ./configure --prefix=/opt/Tools/Lamp/pcre  
@@ -64,7 +64,7 @@
 
 # 编译安装Php
 
-~~~
+~~~shell
     ./configure --prefix="/opt/Tools/Lamp/php" --with-apxs2="/opt/Tools/Lamp/apache24/bin/apxs" --with-config-file-path="/opt/Tools/Lamp/php/etc" --with-pear --enable-shared --enable-inline-optimization --disable-debug --with-libxml-dir --enable-bcmath --enable-calendar --enable-ctype --with-kerberos --enable-ftp --with-jpeg-dir --with-freetype-dir --enable-gd-native-ttf --with-gd --with-iconv --with-zlib --with-openssl --with-xsl --with-imap-ssl --with-imap --with-gettext --with-mhash --enable-sockets --enable-mbstring=all --with-curl --with-curlwrappers --enable-mbregex --enable-exif --with-bz2 --with-sqlite3 --with-mysql=mysqlnd --with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd --with-pdo-sqlite --enable-fileinfo --enable-phar --enable-zip --with-pcre-regex --with-mcrypt --enable-fpm
     -------
     wget http://tw2.php.net/get/php-7.1.4.tar.gz/from/this/mirror
@@ -76,7 +76,7 @@
 
 # 编译安装Nginx
 
-~~~
+~~~shell
     ./configure --prefix=/opt/Tools/Lamp/nginx --with-http_ssl_module --with-pcre=../pcre-8.39 --with-zlib=../zlib-1.2.8 
     make
     make install
@@ -135,43 +135,43 @@
     AddType application/x-httpd-php-source .php5
 ```
 **自动解析php扩展名**
-~~~
+~~~php
     <IfModule dir_module>
         DirectoryIndex index.html index.php
     </IfModule>
 ~~~
 
 **使用分布式apache配置文件**
-~~~
+~~~php
     <Files ".ht*">
         Require all granted
     </Files>
 ~~~
 
 **修改服务器名**
-~~~
+~~~php
     ServerName 127.0.0.1:80
 ~~~
 
 **修改文档目录**
-~~~
+~~~php
     DocumentRoot "/opt/Tools/Lamp/apache24/htdocs"
     <Directory "/opt/Tools/Lamp/apache24/htdocs">
 ~~~
 
 **修改监听端口**
-~~~
+~~~php
     Listen 80
 ~~~
 
 **开启URL重写**
-~~~
+~~~php
     LoadModule rewrite_module modules/mod_rewrite.so
 ~~~
 
 
 ## 编译安装Mysql
-~~~
+~~~php
     基础依赖
         dnf -y gcc gcc-c++ cmake
     配置安装目录与数据储存目录
