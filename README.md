@@ -168,3 +168,38 @@
 ~~~
     LoadModule rewrite_module modules/mod_rewrite.so
 ~~~
+
+
+## 编译安装Mysql
+~~~
+    基础依赖
+        dnf -y gcc gcc-c++ cmake
+    配置安装目录与数据储存目录
+        cmake .-DCMAKE_INSTALL_PREFIX=/usr/local/mysql -DMYSQL_DATADIR=/usr/local/mysql/data
+    编译
+        make
+    安装
+        make install
+    建立系统级用户mysql
+        useradd -r mysql
+    配置所有者与所有组
+        chown -R mysql:mysql ./
+    删除旧mysql配置文件
+        rm /etc/my.cnf
+    初始化mysql
+        prefix/scripts/mysql_install_db --user=mysql
+    清除所有者，但是保持data目录的mysql所有者
+        chown -R root ./*
+        chown -R mysql ./data
+    后台运行mysql
+        prefix/bin/mysqld_safe --user=mysql & 
+    连接mysql控制台
+        prefix/prefix/bin/mysql
+    添加守护进程到开机启动 环境变量
+        $PATH/prefix/bin
+        /etc/init.d
+
+
+    ------
+    Stable版本 mariadb 10.0.0 https://mirrors.tuna.tsinghua.edu.cn/mariadb//mariadb-10.0.30/bintar-linux-x86_64/mariadb-10.0.30-linux-x86_64.tar.gz
+~~~
