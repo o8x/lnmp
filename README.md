@@ -128,7 +128,7 @@
 
 ### 编辑/conf/httpd.conf ###
 
-**使Apcche支持PHP**
+**使Apache支持PHP**
 ```php
     AddType  application/x-compress .Z
     AddType application/x-httpd-php .php
@@ -137,14 +137,14 @@
 **自动解析php扩展名**
 ~~~
     <IfModule dir_module>
-    DirectoryIndex index.html index.php
+        DirectoryIndex index.html index.php
     </IfModule>
 ~~~
 
 **使用分布式apache配置文件**
 ~~~
     <Files ".ht*">
-    Require all granted
+        Require all granted
     </Files>
 ~~~
 
