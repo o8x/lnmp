@@ -170,36 +170,85 @@
 ~~~
 
 
-## 编译安装Mysql
-~~~php
-    基础依赖
-        dnf -y gcc gcc-c++ cmake
-    配置安装目录与数据储存目录
-        cmake .-DCMAKE_INSTALL_PREFIX=/usr/local/mysql -DMYSQL_DATADIR=/usr/local/mysql/data
-    编译
-        make
-    安装
-        make install
-    建立系统级用户mysql
-        useradd -r mysql
-    配置所有者与所有组
-        chown -R mysql:mysql ./
-    删除旧mysql配置文件
-        rm /etc/my.cnf
-    初始化mysql
-        prefix/scripts/mysql_install_db --user=mysql
-    清除所有者，但是保持data目录的mysql所有者
-        chown -R root ./*
-        chown -R mysql ./data
-    后台运行mysql
-        prefix/bin/mysqld_safe --user=mysql & 
-    连接mysql控制台
-        prefix/prefix/bin/mysql
-    添加守护进程到开机启动 环境变量
-        $PATH/prefix/bin
-        /etc/init.d
+# 编译安装Mysql
+
+```php
+	dnf -y gcc gcc-c++ cmake
+	Stable版本 mariadb 10.0.0 https://mirrors.tuna.tsinghua.edu.cn/mariadb//mariadb-10.0.30/bintar-linux-x86_64/mariadb-10.0.30-linux-x86_64.tar.gz
+```    
+**配置安装目录与数据储存目录
+```php
+	cmake .-DCMAKE_INSTALL_PREFIX=/usr/local/mysql -DMYSQL_DATADIR=/usr/local/mysql/data
+```
+**编译 安装**
+```php
+	make && make install
+```
+**用户和组配置**
+```php
+	useradd -r mysql
+	chown -R mysql:mysql ./
+```
+**删除旧配置文件并初始化新的配置文件**
+```php
+	rm /etc/my.cnf
+	prefix/scripts/mysql_install_db --user=mysql
+```
+**清除所有者，但是保持data目录的mysql所有者**
+```php
+	chown -R root ./*
+	chown -R mysql ./data
+```
+**后台运行mysql**
+```php
+	prefix/bin/mysqld_safe --user=mysql & 
+```
+**连接mysql控制台**
+```php
+	prefix/prefix/bin/mysql
+```
+**添加守护进程到开机启动 环境变量**
+```php
+	$PATH/prefix/bin
+	/etc/init.d
+```
 
 
-    ------
-    Stable版本 mariadb 10.0.0 https://mirrors.tuna.tsinghua.edu.cn/mariadb//mariadb-10.0.30/bintar-linux-x86_64/mariadb-10.0.30-linux-x86_64.tar.gz
-~~~
+# 为Apache配置SSL DV证书
+**加载模块**
+```php
+	修改http.conf
+	LoadModule socache_shmcb_module modules/mod_socache_shmcb.so
+	LoadModule ssl_module modules/mod_ssl.so (如果找不到请确认是否编译过 openssl 插件)
+	Include conf/extra/httpd-ssl.conf
+```
+**修改http-ssl.conf**
+```php
+	添加 SSL 协议支持协议，去掉不安全的协议
+	SSLProtocol all -SSLv2 -SSLv3
+	修改加密套件如下
+	SSLCipherSuite ECDHE-RSA-AES128-GCM-SHA256:ECDHE:ECDH:AES:HIGH:!NULL:!aNULL:!MD5:!ADH:!RC4
+	证书公钥配置
+	SSLCertificateFile cert/public.pem
+	证书私钥配置
+	SSLCertificateKeyFile cert/214077101580586.key
+	证书链配置，如果该属性开头有 '#'字符，请删除掉
+	SSLCertificateChainFile cert/chain.pem
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
