@@ -33,7 +33,7 @@
 ~~~shell
     tar -zxf apr-1.4.5.tar.gz  
     cd  apr-1.4.5  
-    ./configure --prefix=/opt/Tools/Lamp/apr  
+    ./configure --prefix=/opt/lamp/apr  
     make && make install
     -------
     wget http://mirrors.hust.edu.cn/apache//apr/apr-1.5.2.tar.gz
@@ -43,7 +43,7 @@
 ~~~shell
     tar -zxf apr-util-1.3.12.tar.gz  
     cd apr-util-1.3.12  
-    ./configure --prefix=/opt/Tools/Lamp/apr-util -with- apr=/opt/Tools/Lamp/apr/bin/apr-1-config  
+    ./configure --prefix=/opt/lamp/apr-util -with- apr=/opt/lamp/apr/bin/apr-1-config  
     make && make install
     wget http://mirrors.hust.edu.cn/apache//apr/apr-util-1.5.4.tar.gz
     -------
@@ -55,7 +55,7 @@
 ~~~shell
     unzip -o pcre-8.10.zip  
     cd pcre-8.10  
-    ./configure --prefix=/opt/Tools/Lamp/pcre  
+    ./configure --prefix=/opt/lamp/pcre  
     make && make install
     -------
     wget https://ftp.pcre.org/pub/pcre/pcre-8.00.tar.gz
@@ -65,7 +65,7 @@
 # 编译安装Php
 
 ~~~shell
-    ./configure --prefix="/opt/Tools/Lamp/php" --with-apxs2="/opt/Tools/Lamp/apache24/bin/apxs" --with-config-file-path="/opt/Tools/Lamp/php/etc" --with-pear --enable-shared --enable-inline-optimization --disable-debug --with-libxml-dir --enable-bcmath --enable-calendar --enable-ctype --with-kerberos --enable-ftp --with-jpeg-dir --with-freetype-dir --enable-gd-native-ttf --with-gd --with-iconv --with-zlib --with-openssl --with-xsl --with-imap-ssl --with-imap --with-gettext --with-mhash --enable-sockets --enable-mbstring=all --with-curl --with-curlwrappers --enable-mbregex --enable-exif --with-bz2 --with-sqlite3 --with-mysql=mysqlnd --with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd --with-pdo-sqlite --enable-fileinfo --enable-phar --enable-zip --with-pcre-regex --with-mcrypt --enable-fpm
+    ./configure --prefix="/opt/lamp/php" --with-apxs2="/opt/lamp/apache24/bin/apxs" --with-config-file-path="/opt/lamp/php/etc" --with-pear --enable-shared --enable-inline-optimization --disable-debug --with-libxml-dir --enable-bcmath --enable-calendar --enable-ctype --with-kerberos --enable-ftp --with-jpeg-dir --with-freetype-dir --enable-gd-native-ttf --with-gd --with-iconv --with-zlib --with-openssl --with-xsl --with-imap-ssl --with-imap --with-gettext --with-mhash --enable-sockets --enable-mbstring=all --with-curl --with-curlwrappers --enable-mbregex --enable-exif --with-bz2 --with-sqlite3 --with-mysql=mysqlnd --with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd --with-pdo-sqlite --enable-fileinfo --enable-phar --enable-zip --with-pcre-regex --with-mcrypt --enable-fpm
     -------
     wget http://tw2.php.net/get/php-7.1.4.tar.gz/from/this/mirror
     wget http://cn2.php.net/get/php-7.1.4.tar.gz/from/this/mirror
@@ -77,7 +77,7 @@
 # 编译安装Nginx
 
 ~~~shell
-    ./configure --prefix=/opt/Tools/Lamp/nginx --with-http_ssl_module --with-pcre=../pcre-8.39 --with-zlib=../zlib-1.2.8 
+    ./configure --prefix=/opt/lamp/nginx --with-http_ssl_module --with-pcre=../pcre-8.39 --with-zlib=../zlib-1.2.8 
     make
     make install
     ------
@@ -118,7 +118,7 @@
 # 编译安装apache
 
 ~~~
-    ./configure --prefix=/opt/Tools/Lamp/Apache2 --enable-module=shared --with-apr=/opt/Tools/Lamp/apr --with-apr-util=/opt/Tools/Lamp/apr-util/ --with-pcre=/opt/Tools/Lamp/pcre
+    ./configure --prefix=/opt/lamp/apache24 --enable-module=shared --with-apr=/opt/lamp/apr --with-apr-util=/opt/lamp/apr-util/ --with-pcre=/opt/lamp/pcre
     ------
     wget http://mirror.bit.edu.cn/apache//httpd/httpd-2.4.25.tar.gz
 ~~~
@@ -155,8 +155,8 @@
 
 **修改文档目录**
 ~~~php
-    DocumentRoot "/opt/Tools/Lamp/apache24/htdocs"
-    <Directory "/opt/Tools/Lamp/apache24/htdocs">
+    DocumentRoot "/opt/lamp/apache24/htdocs"
+    <Directory "/opt/lamp/apache24/htdocs">
 ~~~
 
 **修改监听端口**
@@ -174,11 +174,15 @@
 
 ```php
 	dnf -y gcc gcc-c++ cmake
-	Stable版本 mariadb 10.0.0 https://mirrors.tuna.tsinghua.edu.cn/mariadb//mariadb-10.0.30/bintar-linux-x86_64/mariadb-10.0.30-linux-x86_64.tar.gz
-```    
+    二进制版本
+	   Stable mariadb 10.0.0 https://mirrors.tuna.tsinghua.edu.cn/mariadb//mariadb-10.0.30/bintar-linux-x86_64/mariadb-10.0.30-linux-x86_64.tar.gz
+    源码版本
+        Stable mariadb 10.1.0 https://downloads.mariadb.org/f/mariadb-10.1.23/source/mariadb-10.1.23.tar.gz/from/http%3A//mirrors.tuna.tsinghua.edu.cn/mariadb/?serve
+        Stable mariadb 5.5.56 https://downloads.mariadb.org/f/mariadb-5.5.56/source/mariadb-5.5.56.tar.gz/from/http%3A//mirrors.tuna.tsinghua.edu.cn/mariadb/?serve
+```
 **配置安装目录与数据储存目录
 ```php
-	cmake .-DCMAKE_INSTALL_PREFIX=/usr/local/mysql -DMYSQL_DATADIR=/usr/local/mysql/data
+	cmake -DCMAKE_INSTALL_PREFIX=/opt/lamp/mysql -DMYSQL_DATADIR=/opt/lamp/mysql/data
 ```
 **编译 安装**
 ```php
