@@ -1,5 +1,12 @@
 # LAMP
-在RHEL系计算机上部署lamp
+## 在RHEL系计算机上部署lamp
+
+> 自动化脚本在 ./install.sh
+> 懂linux shell的大佬可以帮忙改改，感激不尽
+> 脚本未经测试，未经测试，未经测试
+> 脚本安装的版本是 php7.14 apache2.4 (mariadb10.1 或 mariadb5.5.56)
+
+----------------------------------------------------------------------------------
 
 ### 需要处理的依赖包 ###
 ~~~shell
@@ -130,7 +137,7 @@
 
 **使Apache支持PHP**
 ```php
-    AddType  application/x-compress .Z
+    AddType application/x-compress .Z
     AddType application/x-httpd-php .php
     AddType application/x-httpd-php-source .php5
 ```
@@ -168,6 +175,61 @@
 ~~~php
     LoadModule rewrite_module modules/mod_rewrite.so
 ~~~
+
+**虚拟主机配置**
+~~~
+    取消httpd.conf注释
+    #Include conf/extra/httpd-vhosts.conf 
+
+    修改conf/extra/httpd-vhosts.conf 添加以下内容
+    基于端口创建主机
+        Listen 80 
+        Listen 8080
+        <VirtualHost doMain:portNumber>
+            DocumentRoot "prefix"
+            ServerName websiteName
+        </VirtualHost>
+
+    基于域名创建主机
+        <VirtualHost *:80>
+            DocumentRoot "prefix"
+            ServerName websiteName
+            ServerAlias siteAlias
+            ErrorLog "logs/test1-error.log"
+            CustomLog "logs/test1-access.log" common
+        </VirtualHost>
+
+    基于IP创建主机
+        <VirtualHost 172.20.30.50:80>
+            DocumentRoot "prefix"
+            ServerName websiteName
+            ErrorLog "logs/test2-error.log"
+            CustomLog "logs/test2-access.log" common
+        </VirtualHost>
+~~~
+
+
+# 为Apache配置SSL DV证书
+**加载模块**
+```php
+    修改http.conf
+    LoadModule socache_shmcb_module modules/mod_socache_shmcb.so
+    LoadModule ssl_module modules/mod_ssl.so (如果找不到请确认是否编译过 openssl 插件)
+    Include conf/extra/httpd-ssl.conf
+```
+**修改http-ssl.conf**
+```php
+    添加 SSL 协议支持协议，去掉不安全的协议
+    SSLProtocol all -SSLv2 -SSLv3
+    修改加密套件如下
+    SSLCipherSuite ECDHE-RSA-AES128-GCM-SHA256:ECDHE:ECDH:AES:HIGH:!NULL:!aNULL:!MD5:!ADH:!RC4
+    证书公钥配置
+    SSLCertificateFile cert/public.pem
+    证书私钥配置
+    SSLCertificateKeyFile cert/214077101580586.key
+    证书链配置，如果该属性开头有 '#'字符，请删除掉
+    SSLCertificateChainFile cert/chain.pem
+```
 
 
 # 编译安装Mysql
@@ -216,43 +278,3 @@
 	$PATH/prefix/bin
 	/etc/init.d
 ```
-
-
-# 为Apache配置SSL DV证书
-**加载模块**
-```php
-	修改http.conf
-	LoadModule socache_shmcb_module modules/mod_socache_shmcb.so
-	LoadModule ssl_module modules/mod_ssl.so (如果找不到请确认是否编译过 openssl 插件)
-	Include conf/extra/httpd-ssl.conf
-```
-**修改http-ssl.conf**
-```php
-	添加 SSL 协议支持协议，去掉不安全的协议
-	SSLProtocol all -SSLv2 -SSLv3
-	修改加密套件如下
-	SSLCipherSuite ECDHE-RSA-AES128-GCM-SHA256:ECDHE:ECDH:AES:HIGH:!NULL:!aNULL:!MD5:!ADH:!RC4
-	证书公钥配置
-	SSLCertificateFile cert/public.pem
-	证书私钥配置
-	SSLCertificateKeyFile cert/214077101580586.key
-	证书链配置，如果该属性开头有 '#'字符，请删除掉
-	SSLCertificateChainFile cert/chain.pem
-```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
