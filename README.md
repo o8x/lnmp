@@ -1,4 +1,4 @@
-# LAMP
+<center># LAMP</center>
 ## 在RHEL系计算机上部署lamp
 
 >自动化脚本在 ./INSTALL.sh
@@ -155,6 +155,50 @@
     </Files>
 ~~~
 
+**隐藏目录**
+~~~
+    .htaccess
+    deny from all
+~~~
+**重写URL**
+~~~
+    .htaccess
+    <IfModule mod_rewrite.c>
+        Options +FollowSymlinks
+        RewriteEngine On
+        RewriteCond %{REQUEST_FILENAME} !-d
+        RewriteCond %{REQUEST_FILENAME} !-f
+        RewriteRule ^(.*)$ index.php/$1 [QSA,PT,L]
+    </IfModule>
+~~~
+
+**关闭列出目录**
+~~~
+    .htaccess
+    <Files *>
+        Options -Indexes
+    </Files>
+
+    http.conf
+    <Directory dirName>
+        Options FollowSymLinks
+        AllowOverride  All
+    </Directory>
+~~~
+
+**引入配置文件**
+~~~
+    Include "Path/configFileName.conf"
+~~~
+
+**切换php版本**
+~~~
+    编译多个版本php在指定的目录
+    建议以(php[version])为目录名
+    在http.conf中写入以下行即可
+    LoadModule php[version].so 
+~~~
+
 **修改服务器名**
 ~~~php
     ServerName 127.0.0.1:80
@@ -231,7 +275,6 @@
     SSLCertificateChainFile cert/chain.pem
 ```
 
-
 # 编译安装Mysql
 
 ```php
@@ -242,39 +285,72 @@
         Stable mariadb 10.1.0 https://downloads.mariadb.org/f/mariadb-10.1.23/source/mariadb-10.1.23.tar.gz/from/http%3A//mirrors.tuna.tsinghua.edu.cn/mariadb/?serve
         Stable mariadb 5.5.56 https://downloads.mariadb.org/f/mariadb-5.5.56/source/mariadb-5.5.56.tar.gz/from/http%3A//mirrors.tuna.tsinghua.edu.cn/mariadb/?serve
 ```
+
 **配置安装目录与数据储存目录
 ```php
 	cmake -DCMAKE_INSTALL_PREFIX=/opt/lamp/mysql -DMYSQL_DATADIR=/opt/lamp/mysql/data
 ```
+
 **编译 安装**
 ```php
 	make && make install
 ```
+
 **用户和组配置**
 ```php
 	useradd -r mysql
 	chown -R mysql:mysql ./
 ```
+
 **删除旧配置文件并初始化新的配置文件**
 ```php
 	rm /etc/my.cnf
 	prefix/scripts/mysql_install_db --user=mysql
 ```
+
 **清除所有者，但是保持data目录的mysql所有者**
 ```php
 	chown -R root ./*
 	chown -R mysql ./data
 ```
+
 **后台运行mysql**
 ```php
 	prefix/bin/mysqld_safe --user=mysql & 
 ```
+
 **连接mysql控制台**
 ```php
 	prefix/prefix/bin/mysql
 ```
+
 **添加守护进程到开机启动 环境变量**
 ```php
 	$PATH/prefix/bin
 	/etc/init.d
+```
+
+**新建用户**
+```
+    insert into mysql.user(`User` ,`Password`) values('user' ,'pass');
+```
+
+**赋予权限**
+```
+    grant all privileges on user.* to user@"allow host" identified by 'password';
+```
+
+**刷新权限**
+```
+    flush privileges;
+```
+
+**硬关闭mysql**
+```
+    ps -e | grep mysql | awk $1 > temp
+    for mysql in $(cat temp)
+        do
+        kill -9 mysql
+    done
+    rm temp
 ```
