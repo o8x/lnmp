@@ -1,4 +1,5 @@
 <center># LAMP</center>
+<br />
 ## 在RHEL系计算机上部署lamp
 
 >自动化脚本在 ./INSTALL.sh
