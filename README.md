@@ -156,37 +156,6 @@
     </Files>
 ~~~
 
-**隐藏目录**
-~~~
-    .htaccess
-    deny from all
-~~~
-**重写URL**
-~~~
-    .htaccess
-    <IfModule mod_rewrite.c>
-        Options +FollowSymlinks
-        RewriteEngine On
-        RewriteCond %{REQUEST_FILENAME} !-d
-        RewriteCond %{REQUEST_FILENAME} !-f
-        RewriteRule ^(.*)$ index.php/$1 [QSA,PT,L]
-    </IfModule>
-~~~
-
-**关闭列出目录**
-~~~
-    .htaccess
-    <Files *>
-        Options -Indexes
-    </Files>
-
-    http.conf
-    <Directory dirName>
-        Options FollowSymLinks
-        AllowOverride  All
-    </Directory>
-~~~
-
 **引入配置文件**
 ~~~
     Include "Path/configFileName.conf"
@@ -221,6 +190,55 @@
     LoadModule rewrite_module modules/mod_rewrite.so
 ~~~
 
+**开启分布式配置文件**
+~~~
+    http.conf
+    Options FollowSymLinks 
+    AllowOverride None
+    改为：
+    AllowOverride All 
+
+    参考资料 ：http://www.jb51.net/article/25476.htm
+~~~
+
+**隐藏目录**
+~~~
+    .htaccess
+    deny from all
+~~~
+**重写URL**
+~~~
+    .htaccess
+    <IfModule mod_rewrite.c>
+        Options +FollowSymlinks
+        RewriteEngine On
+        RewriteCond %{REQUEST_FILENAME} !-d
+        RewriteCond %{REQUEST_FILENAME} !-f
+        RewriteRule ^(.*)$ index.php/$1 [QSA,PT,L]
+    </IfModule>
+~~~
+
+**关闭列出目录**
+~~~
+    .htaccess
+    <Files *>
+        Options -Indexes
+    </Files>
+
+    http.conf
+    <Directory dirName>
+        Options FollowSymLinks
+        AllowOverride  All
+    </Directory>
+~~~
+
+**定义错误码页面**
+~~~
+    .htaccess
+　　ErrorDocument 404 /errors/notfound.html 
+　　ErrorDocument 500 /errors/internalerror.html 
+~~~
+
 **虚拟主机配置**
 ~~~
     取消httpd.conf注释
@@ -252,7 +270,6 @@
             CustomLog "logs/test2-access.log" common
         </VirtualHost>
 ~~~
-
 
 # 为Apache配置SSL DV证书
 **加载模块**
