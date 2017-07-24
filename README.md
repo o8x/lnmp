@@ -133,6 +133,36 @@
     }
 ```
 
+
+**PHP-fpm 配置**
+```
+	在执行文件时  加上 --with-config-file-path=/usr/local/php/etc 可以指定php.ini的位置
+	# cd /usr/local/php/etc/  进入这个目录
+	# cp php-fpm.conf.default php-fpm.conf  添加php-fpm.conf 配置文件
+	# cd php-fpm.d  在进入这个目录
+	# cp www.conf.default www.conf  添加www.conf，这个文件是phpfpm的端口号等信息
+	进入php-fpm.conf 这个文件把 ;pid = run/php-fpm.pid 前面的;去掉
+	启动php
+	#/usr/local/php/sbin/php-fpm
+	配置nginx
+	进入nginx.conf ，在 /usr/local/nginx/conf/nginx.conf中
+	location ~ \.php$ {
+		root html;
+		fastcgi_pass 127.0.0.1:9000;
+		fastcgi_index index.php;
+		fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+		include fastcgi_params;
+	}
+	重启nginx :/usr/local/nginx/sbin/nginx -s reload
+	安装完成
+	php-fpm信号控制启动重启等状态
+	SIGINT, SIGTERM 立刻终止
+	SIGQUIT 平滑终止
+	SIGUSR1 重新打开日志文件
+	SIGUSR2 平滑重载所有worker进程并重新载入配置和二进制模块
+	php重启：kill -USR2 `cat /usr/local/php/var/run/php-fpm.pid`
+	停止 ： kill -SIGINT php-fpm.pid
+```
 ----------------------------------------
 
 # 编译安装apache
