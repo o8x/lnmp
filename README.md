@@ -4,7 +4,7 @@
 
 >自动化脚本在 ./INSTALL.sh       
 >懂linux shell的大佬可以帮忙改改，感激不尽      
->*脚本未经测试，未经测试，未经测试        *
+>*脚本未经测试，未经测试，未经测试 *          
 >脚本安装的软件版本是 php7.14 apache2.4 (mariadb10.1 或 mariadb5.5.56)       
 
 ----------------------------------------------------------------------------------
@@ -139,6 +139,7 @@
    }
 ```
 
+
 **反向代理**
 ```nginx
    # =======================
@@ -155,9 +156,10 @@
    }
 ```
 
+
 **负载均衡**
-```
-  # =======================
+```nginx
+  # =======================
   # 负载均衡
   # upstream 段 ,可以有若干
   # upstream 需要负载均衡的地址或站点
@@ -218,7 +220,7 @@
 ```
 
 **PHP-fpm 配置**
-```
+```nginx
 	在执行文件时  加上 --with-config-file-path=/usr/local/php/etc 可以指定php.ini的位置
 	# cd /usr/local/php/etc/  进入这个目录
 	# cp php-fpm.conf.default php-fpm.conf  添加php-fpm.conf 配置文件
@@ -250,8 +252,8 @@
 
 # 编译安装apache
 
-~~~
-    ./configure --prefix=/opt/lamp/apache24 --enable-module=shared --with-apr=/opt/lamp/apr --with-apr-util=/opt/lamp/apr-util/ --with-pcre=/opt/lamp/pcre
+~~~shell
+    ./configure --prefix=/opt/lamp/apache24 --enable-module=shared --with-apr=/opt/lamp/apr --with-apr-util=/opt/lamp/apr-util/ --with-pcre=/opt/lamp/pcre
     ------
     wget http://mirror.bit.edu.cn/apache//httpd/httpd-2.4.25.tar.gz
 ~~~
@@ -262,32 +264,32 @@
 ### 编辑/conf/httpd.conf ###
 
 **使Apache支持PHP**
-```php
-    AddType application/x-compress .Z
+```apache
+    AddType application/x-compress .Z
     AddType application/x-httpd-php .php
     AddType application/x-httpd-php-source .php5
 ```
 **自动解析php扩展名**
-~~~php
+~~~apache
     <IfModule dir_module>
         DirectoryIndex index.html index.php
     </IfModule>
 ~~~
 
 **使用分布式apache配置文件**
-~~~php
+~~~apache
     <Files ".ht*">
         Require all granted
     </Files>
 ~~~
 
 **引入配置文件**
-~~~
+~~~apache
     Include "Path/configFileName.conf"
 ~~~
 
 **切换php版本**
-~~~
+~~~apache
     编译多个版本php在指定的目录
     建议以(php[version])为目录名
     在http.conf中写入以下行即可
@@ -295,28 +297,28 @@
 ~~~
 
 **修改服务器名**
-~~~php
+~~~apache
     ServerName 127.0.0.1:80
 ~~~
 
 **修改文档目录**
-~~~php
+~~~apache
     DocumentRoot "/opt/lamp/apache24/htdocs"
     <Directory "/opt/lamp/apache24/htdocs">
 ~~~
 
 **修改监听端口**
-~~~php
+~~~apache
     Listen 80
 ~~~
 
 **开启URL重写**
-~~~php
+~~~apache
     LoadModule rewrite_module modules/mod_rewrite.so
 ~~~
 
 **开启分布式配置文件**
-~~~
+~~~apache
     http.conf
     Options FollowSymLinks 
     AllowOverride None
@@ -327,12 +329,12 @@
 ~~~
 
 **隐藏目录**
-~~~
+~~~apache
     .htaccess
     deny from all
 ~~~
 **重写URL**
-~~~
+~~~apache
     .htaccess
     <IfModule mod_rewrite.c>
         Options +FollowSymlinks
@@ -344,7 +346,7 @@
 ~~~
 
 **关闭列出目录**
-~~~
+~~~apache
     .htaccess
     <Files *>
         Options -Indexes
@@ -358,14 +360,14 @@
 ~~~
 
 **定义错误码页面**
-~~~
+~~~apache
     .htaccess
 　　ErrorDocument 404 /errors/notfound.html 
 　　ErrorDocument 500 /errors/internalerror.html 
 ~~~
 
 **虚拟主机配置**
-~~~
+~~~apache
     取消httpd.conf注释
     #Include conf/extra/httpd-vhosts.conf 
 
