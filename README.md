@@ -2,10 +2,10 @@
 
 ## 在RHEL系计算机上部署lamp
 
->自动化脚本在 ./INSTALL.sh <br />
->懂linux shell的大佬可以帮忙改改，感激不尽 <br />
->*脚本未经测试，未经测试，未经测试 <br />*
->脚本安装的软件版本是 php7.14 apache2.4 (mariadb10.1 或 mariadb5.5.56) <br />
+>自动化脚本在 ./INSTALL.sh       
+>懂linux shell的大佬可以帮忙改改，感激不尽      
+>*脚本未经测试，未经测试，未经测试        *
+>脚本安装的软件版本是 php7.14 apache2.4 (mariadb10.1 或 mariadb5.5.56)       
 
 ----------------------------------------------------------------------------------
 
@@ -72,13 +72,8 @@
 
 ## yum dnf 查找不到的包
 **lib-client**
-```php
+```shell
 	ftp://195.220.108.108/linux/centos/6.9/os/x86_64/Packages/libc-client-2007e-11.el6.x86_64.rpm
-```
-
-**lib-xml**
-```php
-	
 ```
 
 
@@ -105,6 +100,93 @@
 ~~~
 
 ## 配置nginx
+**Nginx的虚拟主机配置**
+```nginx
+   # =======================
+   # 基于端口的虚拟主机配置
+   # =======================
+   server {
+       listen           80;
+       server_name     127.0.0.1:80;
+       location / {
+           index       index.html;
+           root             /opt/devel/nginx/html;
+       }
+   }
+
+   server {
+       listen           8001;                      # 该虚拟主机监听的端口
+       server_name      127.0.0.1:8001;            # 监听的域名和上一行设置的端口
+       location / {                                # 可以是以根目录为路径的路径名 ,也可是符合nginx解析规则的正则表达式
+           index  index.html;
+           root /opt/devel/nginx/html/indexTest;   # 该虚拟主机的根目录 ,应该是相对于本机的绝对路径
+       }
+   }
+   
+   
+   # =======================
+   # 基于域名的虚拟主机配置
+   # 因为代码从上往下执行 ,请求会先被上一段的监听127.0.0.1:80的虚拟主机处理 ,
+   # 所以同样是监听80端口的这一段就不会被执行
+   # =======================
+   server {
+       listen 80;
+       server_name www.test.api;
+       location / {
+           index index.html;
+           root /opt/devel/nginx/html/domain;
+       }
+   }
+```
+
+**反向代理**
+```nginx
+   # =======================
+   # 反向代理
+   # 可以是以上任意一种虚拟主机配置方法
+   # 所有方法的虚拟主机配置都可以利用正则进行二次匹配转发与二次负载均衡
+   # =======================
+   server {
+       listen 80;
+       server_name 127.0.0.1;
+       location / {                                # 这里可以是正则再此匹配转发
+           proxy_pass http://domain.xxx            # 进入到这里的请求再次转发到xxxx ,即反向代理到xxxx,协议可以是http或https的域名或IP和端口
+       }
+   }
+```
+
+**负载均衡**
+```
+  # =======================
+  # 负载均衡
+  # upstream 段 ,可以有若干
+  # upstream 需要负载均衡的地址或站点
+  # 可以用上面的任意一种方法配置虚拟主机 ,负载均衡均可以实现
+  # =======================
+  upstream 127.0.0.1 {
+       #ip_hash;                                  # 负载算法 ,默认轮训 加权后是加权轮训 ,还有 ip_hash 和其他
+       server 127.0.0.1:32775  weight=1;          # 所有供给负载均衡的机器的ip与端口
+       server 127.0.0.1:32776  weight=5;          # 每个机器的父负载情况 | 权重
+       server 127.0.0.1:32777  weight=4;          # 权重值越高 ,机器被转发的请求就越多 ,负载就越高
+  }
+   
+  # ============================
+  # 需要负载均衡的机器的虚拟主机配置 ,对应上面的upstream xxxx
+  # ============================
+  server {
+      listen       8080;
+      location / {
+           proxy_set_header Host $host;           #设置主机和客户端真实地址，以便获取客户端真实IP ,这里设置的hader头可以由 $_SERVER 接收到
+           proxy_set_header X-Real-IP $remote_addr;
+           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+           proxy_buffering off;                   #禁用缓存
+           proxy_pass http://127.0.0.1;           #反向代理的地址 代理到负载均衡配置的地址
+      }
+  }
+
+```
+
+
 **使php支持pathinfo与隐藏index.php**
 ```nginx
     server { 
@@ -112,27 +194,28 @@
         default_type text/plain;
         root /var/www/html;
         index index.php index.htm index.html;
+    
     #隐藏index.php
-        location / {
-              if (!-e $request_filename) {
-                       #一级目录
-                      # rewrite ^/(.*)$ /index.php/$1 last;
-                       #二级目录
-                       rewrite ^/MYAPP/(.*)$ /MYAPP/index.php/$1 last;
-                 }  
-        }
-    #pathinfo设置
-            location ~ \.php($|/) {
-                fastcgi_pass   127.0.0.1:9000;
-                fastcgi_index  index.php;
-                fastcgi_split_path_info ^(.+\.php)(.*)$;
-                fastcgi_param   PATH_INFO $fastcgi_path_info;
-                fastcgi_param  SCRIPT_FILENAME   $document_root$fastcgi_script_name;
-                include        fastcgi_params;
-            }
+    location / {
+        if (!-e $request_filename) {
+            #一级目录
+            # rewrite ^/(.*)$ /index.php/$1 last;
+            #二级目录
+            rewrite ^/MYAPP/(.*)$ /MYAPP/index.php/$1 last;
+        }  
     }
+        
+    #pathinfo设置
+    location ~ \.php($|/) {
+        fastcgi_pass   127.0.0.1:9000;
+        fastcgi_index  index.php;
+        fastcgi_split_path_info ^(.+\.php)(.*)$;
+        fastcgi_param   PATH_INFO $fastcgi_path_info;
+        fastcgi_param  SCRIPT_FILENAME   $document_root$fastcgi_script_name;
+        include        fastcgi_params;
+    }
+}
 ```
-
 
 **PHP-fpm 配置**
 ```
