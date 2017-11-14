@@ -76,7 +76,6 @@
 	ftp://195.220.108.108/linux/centos/6.9/os/x86_64/Packages/libc-client-2007e-11.el6.x86_64.rpm
 ```
 
-
 # 编译安装Php
 
 ~~~shell
@@ -92,8 +91,10 @@
 # 编译安装Nginx
 
 ~~~shell
-    ./configure --prefix=/opt/lamp/nginx --with-http_ssl_module --with-pcre=../pcre-8.39 --with-zlib=../zlib-1.2.8 
-    make
+    ./configure --prefix=/opt/lamp/nginx --with-http_ssl_module --with-pcre=../pcre-8.39 --with-zlib=../zlib-1.2.8  
+    # 需要TLS支持(一个IP使用多个SSL证书)加上这个 --with-openssl-opt="enable-tlsext" 
+    
+    make
     make install
     ------
     wget http://nginx.org/download/nginx-1.12.0.zip
