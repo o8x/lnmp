@@ -422,8 +422,12 @@
 ```
 
 # 编译安装Mysql
+# 基础依赖 
+```bash
+	yum install gcc gcc-c++ cmake ncurses-devel
+```
 
-```php
+```bash
 	dnf -y gcc gcc-c++ cmake
     二进制版本
 	   Stable mariadb 10.0.0 https://mirrors.tuna.tsinghua.edu.cn/mariadb//mariadb-10.0.30/bintar-linux-x86_64/mariadb-10.0.30-linux-x86_64.tar.gz
@@ -433,7 +437,7 @@
 ```
 
 **配置安装目录与数据储存目录
-```php
+```cmake
 	cmake -DCMAKE_INSTALL_PREFIX=/opt/lamp/mysql -DMYSQL_DATADIR=/opt/lamp/mysql/data
 ```
 
