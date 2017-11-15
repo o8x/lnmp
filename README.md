@@ -157,6 +157,26 @@
    }
 ```
 
+**nginx SSL **
+```
+server {
+    listen 443;
+    server_name localhost;
+    ssl on;
+    root html;
+    index index.html index.htm;
+    ssl_certificate   cert/214091822580454.pem;
+    ssl_certificate_key  cert/214091822580454.key;
+    ssl_session_timeout 5m;
+    ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:ECDHE:ECDH:AES:HIGH:!NULL:!aNULL:!MD5:!ADH:!RC4;
+    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+    ssl_prefer_server_ciphers on;
+    location / {
+        root html;
+        index index.html index.htm;
+    }
+}
+```
 
 **负载均衡**
 ```nginx
@@ -434,6 +454,9 @@
     源码版本
         Stable mariadb 10.1.0 https://downloads.mariadb.org/f/mariadb-10.1.23/source/mariadb-10.1.23.tar.gz/from/http%3A//mirrors.tuna.tsinghua.edu.cn/mariadb/?serve
         Stable mariadb 5.5.56 https://downloads.mariadb.org/f/mariadb-5.5.56/source/mariadb-5.5.56.tar.gz/from/http%3A//mirrors.tuna.tsinghua.edu.cn/mariadb/?serve
+
+	#rpm 包
+	curl -O https://cdn.mysql.com//Downloads/MySQL-5.6/MySQL-5.6.38-1.el7.x86_64.rpm-bundle.tar
 ```
 
 **配置安装目录与数据储存目录
