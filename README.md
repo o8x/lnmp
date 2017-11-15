@@ -522,6 +522,7 @@
 **新建用户**
 ```
     insert into mysql.user(`User` ,`Password`) values('user' ,'pass');
+	GRANT USAGE ON wordpress.* TO 'blog'@'%' IDENTIFIED BY 'password' WITH GRANT OPTION;
 ```
 
 **赋予权限**
