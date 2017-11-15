@@ -1,11 +1,11 @@
-# LAMP
+# LNMP
 
-## 在RHEL系计算机上部署lamp
+## 在RHEL系计算机上部署lnmp
 
 >自动化脚本在 ./INSTALL.sh       
 >懂linux shell的大佬可以帮忙改改，感激不尽      
 >*脚本未经测试，未经测试，未经测试 *          
->脚本安装的软件版本是 php7.14 apache2.4 (mariadb10.1 或 mariadb5.5.56)       
+>脚本安装的软件版本是 php7.16 apache2.4 nginx1.13 tengine2.21 (mariadb10.1 或 mariadb5.5.56)       
 
 ----------------------------------------------------------------------------------
 
@@ -76,8 +76,8 @@
 	ftp://195.220.108.108/linux/centos/6.9/os/x86_64/Packages/libc-client-2007e-11.el6.x86_64.rpm
 ```
 
-# 编译安装Php
-
+编译安装Php
+===========
 ~~~shell
     ./configure --prefix="/opt/lamp/php" --with-apxs2="/opt/lamp/apache24/bin/apxs" --with-config-file-path="/opt/lamp/php/etc" --with-pear --enable-shared --enable-inline-optimization --disable-debug --with-libxml-dir --enable-bcmath --enable-calendar --enable-ctype --with-kerberos --enable-ftp --with-jpeg-dir --with-freetype-dir --enable-gd-native-ttf --with-gd --with-iconv --with-zlib --with-openssl --with-xsl --with-imap-ssl --with-imap --with-gettext --with-mhash --enable-sockets --enable-mbstring=all --with-curl --with-curlwrappers --enable-mbregex --enable-exif --with-bz2 --with-sqlite3 --with-mysql=mysqlnd --with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd --with-pdo-sqlite --enable-fileinfo --enable-phar --enable-zip --with-pcre-regex --with-mcrypt --enable-fpm
     -------
@@ -87,9 +87,15 @@
     如果需要nginx支持，则需要另外加入 --enable-fpm 并除去 --with-apsx
 ~~~
 -------------------------------------------
+**得到php.ini**
+从源码目录复制php.ini-production 到指定的php安装路径/etc/php.ini
 
-# 编译安装Nginx
+**安装xdebug**
+下载xdebug ,安装autoconf ,phpize ./configure编译
 
+
+编译安装Nginx
+==========
 ~~~shell
     ./configure --prefix=/opt/lamp/nginx --with-http_ssl_module --with-pcre=../pcre-8.39 --with-zlib=../zlib-1.2.8  
     # 需要TLS支持(一个IP使用多个SSL证书)加上这个 --with-openssl-opt="enable-tlsext" 
@@ -157,25 +163,31 @@
    }
 ```
 
-**nginx SSL **
+
+**配置HTTPS**
+```nginx
+	server {
+	    listen 443;
+	    server_name localhost;
+	    ssl on;
+	    root html;
+	    index index.html index.htm;
+	    ssl_certificate   cert/214091822580454.pem;
+	    ssl_certificate_key  cert/214091822580454.key;
+	    ssl_session_timeout 5m;
+	    ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:ECDHE:ECDH:AES:HIGH:!NULL:!aNULL:!MD5:!ADH:!RC4;
+	    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+	    ssl_prefer_server_ciphers on;
+	    location / {
+		root html;
+		index index.html index.htm;
+	    }
+	}
 ```
-server {
-    listen 443;
-    server_name localhost;
-    ssl on;
-    root html;
-    index index.html index.htm;
-    ssl_certificate   cert/214091822580454.pem;
-    ssl_certificate_key  cert/214091822580454.key;
-    ssl_session_timeout 5m;
-    ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:ECDHE:ECDH:AES:HIGH:!NULL:!aNULL:!MD5:!ADH:!RC4;
-    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
-    ssl_prefer_server_ciphers on;
-    location / {
-        root html;
-        index index.html index.htm;
-    }
-}
+
+**强制https**
+```nignx
+	rewrite ^(.*)$  https://$host$1 permanent;
 ```
 
 **负载均衡**
@@ -271,8 +283,8 @@ server {
 ```
 ----------------------------------------
 
-# 编译安装apache
-
+编译安装apache
+==============
 ~~~shell
     ./configure --prefix=/opt/lamp/apache24 --enable-module=shared --with-apr=/opt/lamp/apr --with-apr-util=/opt/lamp/apr-util/ --with-pcre=/opt/lamp/pcre
     ------
@@ -419,7 +431,7 @@ server {
         </VirtualHost>
 ~~~
 
-# 为Apache配置SSL DV证书
+## 为Apache配置SSL DV证书
 **加载模块**
 ```php
     修改http.conf
@@ -441,10 +453,11 @@ server {
     SSLCertificateChainFile cert/chain.pem
 ```
 
-# 编译安装Mysql
-# 基础依赖 
+编译安装Mysql
+============
+## 基础依赖 
 ```bash
-	yum install gcc gcc-c++ cmake ncurses-devel
+	yum install gcc gcc-c++ cmake ncurses-devel autoconf
 ```
 
 ```bash
@@ -480,6 +493,9 @@ server {
 	rm /etc/my.cnf
 	prefix/scripts/mysql_install_db --user=mysql
 ```
+
+**如果遇到缺少perl moudule , yum安装 autoconf即可**
+
 
 **清除所有者，但是保持data目录的mysql所有者**
 ```php
