@@ -166,28 +166,30 @@
 
 **配置HTTPS**
 ```nginx
-	server {
-	    listen 443;
-	    server_name localhost;
-	    ssl on;
-	    root html;
-	    index index.html index.htm;
-	    ssl_certificate   cert/214091822580454.pem;
-	    ssl_certificate_key  cert/214091822580454.key;
-	    ssl_session_timeout 5m;
-	    ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:ECDHE:ECDH:AES:HIGH:!NULL:!aNULL:!MD5:!ADH:!RC4;
-	    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
-	    ssl_prefer_server_ciphers on;
-	    location / {
-		root html;
-		index index.html index.htm;
-	    }
+server {
+	listen 443;
+	server_name localhost;
+	ssl on;
+	root html;
+	index index.html index.htm;
+	ssl_certificate   cert/214091822580454.pem;
+	ssl_certificate_key  cert/214091822580454.key;
+	ssl_session_timeout 5m;
+	ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:ECDHE:ECDH:AES:HIGH:!NULL:!aNULL:!MD5:!ADH:!RC4;
+	ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+	ssl_prefer_server_ciphers on;
+	location / {
+	root html;
+	index index.html index.htm;
 	}
+}
 ```
 
 **强制https**
 ```nignx
-	rewrite ^(.*)$  https://$host$1 permanent;
+if ($server_port !~ 443){
+    rewrite ^(/.*)$ https://$host$1 permanent;
+}
 ```
 
 **负载均衡**
