@@ -8,7 +8,7 @@
 ~~~shell
     dnf yum 均可执行下列操作
     dnf -y remove apr-util-devel apr apr-util-mysql apr-docs apr-devel apr-util apr-util-docs 
-    dnf -y install openssl openssl-devel db4-devel libjpeg-devel libpng-devel libXpm-devel gmp-devel libc-client-devel openldap-devel unixODBC-devel postgresql-devel sqlite-devel aspell-devel net-snmp-devel libxslt-devel libxml2-devel pcre-devel mysql-devel unixODBC-devel postgresql-devel pspell-devel net-snmp-devel libxslt-devel freetype-devel libxml-devel libc-client-devel pam-devel libc-client libc-client-devel bzip2 bzip2-devel 
+    dnf -y install openssl openssl-devel db4-devel libjpeg-devel libpng-devel libXpm-devel gmp-devel libc-client-devel openldap-devel unixODBC-devel postgresql-devel sqlite-devel aspell-devel net-snmp-devel libxslt-devel libxml2-devel pcre-devel mysql-devel unixODBC-devel postgresql-devel net-snmp-devel libxslt-devel freetype-devel libxml-devel libc-client-devel pam-devel libc-client libc-client-devel bzip2 bzip2-devel curl curl-devel pspell-devel
 ~~~
 
 ### 需要的进行的链接动作
@@ -74,7 +74,49 @@ ftp://195.220.108.108/linux/centos/6.9/os/x86_64/Packages/libc-client-2007e-11.e
 编译安装Php
 ===========
 ~~~shell
-./configure --prefix="/opt/lamp/php" --with-apxs2="/opt/lamp/apache24/bin/apxs" --with-config-file-path="/opt/lamp/php/etc" --with-pear --enable-shared --enable-inline-optimization --disable-debug --with-libxml-dir --enable-bcmath --enable-calendar --enable-ctype --with-kerberos --enable-ftp --with-jpeg-dir --with-freetype-dir --enable-gd-native-ttf --with-gd --with-iconv --with-zlib --with-openssl --with-xsl --with-imap-ssl --with-imap --with-gettext --with-mhash --enable-sockets --enable-mbstring=all --with-curl --with-curlwrappers --enable-mbregex --enable-exif --with-bz2 --with-sqlite3 --with-mysql=mysqlnd --with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd --with-pdo-sqlite --enable-fileinfo --enable-phar --enable-zip --with-pcre-regex --with-mcrypt --enable-fpm
+./configure \
+        --prefix="/opt/Develope/php/7.2.7" \
+        --with-config-file-path="/opt/Develope/php/7.2.7/etc" \
+        --with-pear  \
+       --enable-shared  \
+       --enable-inline-optimization \
+        --disable-debug \
+        --with-libxml-dir \
+        --enable-bcmath \
+        --enable-calendar \
+        --enable-ctype \
+        --with-kerberos \
+        --enable-ftp \
+        --with-jpeg-dir \
+        --with-freetype-dir  \
+       --enable-gd-native-ttf \
+        --with-gd \
+        --with-iconv  \
+       --with-zlib  \
+       --with-openssl \
+        --with-xsl  \
+       --with-imap-ssl  \
+       --with-imap \
+        --with-gettext \
+        --with-mhash  \
+       --enable-sockets \
+        --enable-mbstring=all \
+        --with-curl \
+        --with-curlwrappers \
+        --enable-mbregex \
+        --enable-exif  \
+       --with-bz2  \
+       --with-sqlite3  \
+       --with-mysql=mysqlnd \
+        --with-mysqli=mysqlnd \
+        --with-pdo-mysql=mysqlnd  \
+       --with-pdo-sqlite  \
+       --enable-fileinfo \
+        --enable-phar  \
+       --enable-zip  \
+       --with-pcre-regex  \
+       --with-mcrypt  \
+       --enable-fpm
 -------
 wget http://tw2.php.net/get/php-7.1.4.tar.gz/from/this/mirror
 wget http://cn2.php.net/get/php-7.1.4.tar.gz/from/this/mirror
